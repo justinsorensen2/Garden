@@ -14,7 +14,8 @@ namespace Garden
       Console.WriteLine($"(1) View all plants. (2) Add a plant. (3) Remove a plant.");
       Console.WriteLine($"(4) Water a plant. (5) View plants that have not been watered today.");
       Console.WriteLine($"(6) Display location summary. (7) Exit.");
-      var menuInt = int.Parse(Console.ReadLine());
+      var input = Console.ReadLine();
+      var menuInt = TryInt(input);
       Console.ForegroundColor = ConsoleColor.White;
       return menuInt;
     }
@@ -104,33 +105,30 @@ namespace Garden
     public static void ViewUnwatered()
     {
       var db = new GardenContext();
-      foreach (var p in db.Plants)
+      var displayPlants = db.Plants.Where(p => p.LastWateredDate < DateTime.Today);
+      if (displayPlants == null)
       {
-        var displayPlants = db.Plants.Where(p => p.LastWateredDate < DateTime.Today);
-        if (displayPlants == null)
-        {
-          Console.WriteLine($"No plants have gone without water today.");
-        }
-        foreach (var d in displayPlants)
-        {
-          Console.WriteLine($"{d.Species} was last watered on {d.LastWateredDate}.");
-        }
+        Console.WriteLine($"No plants have gone without water today.");
       }
+      foreach (var d in displayPlants)
+      {
+        Console.WriteLine($"{d.Species} was last watered on {d.LastWateredDate}.");
+      }
+
     }
     public static void LocationSummary()
     {
       var db = new GardenContext();
-      foreach (var p in db.Plants)
+      var displayPlants = db.Plants.Where(p => p.LocatedPlanted != "");
+      if (displayPlants == null)
       {
-        var displayPlants = db.Plants.OrderBy(p => p.LocatedPlanted);
-        if (displayPlants == null)
-        {
-          Console.WriteLine($"You have no plants in your garden.");
-        }
-        foreach (var d in displayPlants)
-        {
-          Console.WriteLine($"{d.Species} is planted in {d.LocatedPlanted}.");
-        }
+        Console.WriteLine($"You have no plants in your garden.");
+      }
+      var allPlants = displayPlants.OrderBy(d => d.LocatedPlanted);
+      foreach (var d in allPlants)
+      {
+
+        Console.WriteLine($"{d.Species} is planted in {d.LocatedPlanted}.");
       }
     }
     public static int TryInt(string input)
