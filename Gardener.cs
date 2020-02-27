@@ -62,7 +62,8 @@ namespace Garden
         var db = new GardenContext();
         ViewPlants();
         Console.WriteLine($"Please enter the number of the plant you would like to remove.");
-        var deletePlantId = int.Parse(Console.ReadLine());
+        var input = Console.ReadLine();
+        var deletePlantId = TryInt(input);
         var plantToRemove = db.Plants.FirstOrDefault(p => p.Id == deletePlantId);
         if (plantToRemove == null)
         {
@@ -85,7 +86,8 @@ namespace Garden
         var db = new GardenContext();
         ViewPlants();
         Console.WriteLine($"Please enter the number of the plant you would like to water.");
-        var waterPlantId = int.Parse(Console.ReadLine());
+        var input = Console.ReadLine();
+        var waterPlantId = TryInt(input);
         var plantToWater = db.Plants.FirstOrDefault(p => p.Id == waterPlantId);
         if (plantToWater == null)
         {
@@ -104,24 +106,52 @@ namespace Garden
       var db = new GardenContext();
       foreach (var p in db.Plants)
       {
-        var displayPlants = db.Plants.Where(p => p.LastWateredDate != DateTime.Today);
+        var displayPlants = db.Plants.Where(p => p.LastWateredDate < DateTime.Today);
         if (displayPlants == null)
         {
           Console.WriteLine($"No plants have gone without water today.");
         }
-        else
+        foreach (var d in displayPlants)
         {
-          foreach (var d in displayPlants)
-          {
-            Console.WriteLine($"{d.Species} was last watered on {d.LastWateredDate}.");
-          }
+          Console.WriteLine($"{d.Species} was last watered on {d.LastWateredDate}.");
         }
       }
     }
     public static void LocationSummary()
     {
-      Console.WriteLine("Display Location Summary");
+      var db = new GardenContext();
+      foreach (var p in db.Plants)
+      {
+        var displayPlants = db.Plants.OrderBy(p => p.LocatedPlanted);
+        if (displayPlants == null)
+        {
+          Console.WriteLine($"You have no plants in your garden.");
+        }
+        foreach (var d in displayPlants)
+        {
+          Console.WriteLine($"{d.Species} is planted in {d.LocatedPlanted}.");
+        }
+      }
     }
+    public static int TryInt(string input)
+    {
+      var plantId = 0;
+      var trying = true;
+      while (trying)
+      {
+        var intBool = int.TryParse(input, out plantId);
+        if (intBool)
+        {
+          trying = false;
 
+        }
+        else
+        {
+          Console.WriteLine("That is not a valid selection. Please try again.");
+          input = Console.ReadLine();
+        }
+      }
+      return plantId;
+    }
   }
 }
