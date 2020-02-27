@@ -14,6 +14,7 @@ namespace Garden
       //welcome user to the Garden Database then call menu method
       Console.WriteLine($"Welcome to the Garden Database.");
       Console.WriteLine($"What would you like to do?");
+
       //set bool to keep menu/options running
       var isRunning = true;
       //start while loop
@@ -34,7 +35,22 @@ namespace Garden
         }
         else if (menuInt == 4)
         {
-          // Gardener.WaterAPlant;
+          Gardener.WaterAPlant();
+        }
+        else if (menuInt == 5)
+        {
+          Gardener.ViewUnwatered();
+        }
+        else if (menuInt == 6)
+        {
+          Gardener.LocationSummary();
+        }
+        else if (menuInt == 7)
+        {
+          Console.WriteLine($"Thank you for using the Garden Database.");
+          Console.WriteLine($"Goodbye.");
+          Console.Clear();
+          isRunning = false;
         }
 
       }

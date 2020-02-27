@@ -55,6 +55,7 @@ namespace Garden
     }
     public static void RemovePlant()
     {
+      Console.ForegroundColor = ConsoleColor.Red;
       var removing = true;
       while (removing)
       {
@@ -73,7 +74,53 @@ namespace Garden
           removing = false;
         }
       }
-
+      Console.ForegroundColor = ConsoleColor.White;
+    }
+    public static void WaterAPlant()
+    {
+      Console.ForegroundColor = ConsoleColor.Blue;
+      var watering = true;
+      while (watering)
+      {
+        var db = new GardenContext();
+        ViewPlants();
+        Console.WriteLine($"Please enter the number of the plant you would like to water.");
+        var waterPlantId = int.Parse(Console.ReadLine());
+        var plantToWater = db.Plants.FirstOrDefault(p => p.Id == waterPlantId);
+        if (plantToWater == null)
+        {
+          Console.WriteLine($"That is not a valid selection. Please try again.");
+        }
+        else
+        {
+          plantToWater.LastWateredDate = DateTime.Now;
+          watering = false;
+        }
+      }
+      Console.ForegroundColor = ConsoleColor.White;
+    }
+    public static void ViewUnwatered()
+    {
+      var db = new GardenContext();
+      foreach (var p in db.Plants)
+      {
+        var displayPlants = db.Plants.Where(p => p.LastWateredDate != DateTime.Today);
+        if (displayPlants == null)
+        {
+          Console.WriteLine($"No plants have gone without water today.");
+        }
+        else
+        {
+          foreach (var d in displayPlants)
+          {
+            Console.WriteLine($"{d.Species} was last watered on {d.LastWateredDate}.");
+          }
+        }
+      }
+    }
+    public static void LocationSummary()
+    {
+      Console.WriteLine("Display Location Summary");
     }
 
   }
